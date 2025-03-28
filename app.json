@@ -20,10 +20,23 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.manohar9490.frontend"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d3f35b4c-1030-4f3c-b58e-898ac5ba96e9"
+      }
+    },
+    "owner": "manohar9490",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/d3f35b4c-1030-4f3c-b58e-898ac5ba96e9"
     }
   }
 }

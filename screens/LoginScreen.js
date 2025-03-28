@@ -193,14 +193,14 @@ export default function LoginScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
         <Text style={styles.link}>Don’t have an account? Sign up</Text>
       </TouchableOpacity>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={[styles.skipButton, { marginTop: 20 }]}
         onPress={() => navigation.navigate("PedometerTest")}
       >
         <Text style={{ color: "#007AFF", fontSize: 16 }}>
           Skip & Test Pedometer
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
