@@ -3,11 +3,20 @@
     "name": "frontend",
     "slug": "frontend",
     "version": "1.0.0",
+    "runtimeVersion": "1.0.0",
     "scheme": "eatfitgo",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
+
+    "platforms": ["ios", "android"],
+    "permissions": [
+      "ACCESS_FINE_LOCATION",
+      "ACCESS_COARSE_LOCATION",
+      "MOTION",
+      "ACTIVITY_RECOGNITION"
+    ],
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -19,7 +28,16 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "permissions": [
+          "ACCESS_FINE_LOCATION",
+          "BODY_SENSORS",
+          "ACTIVITY_RECOGNITION",
+          "WAKE_LOCK",
+          "RECEIVE_BOOT_COMPLETED",
+          "VIBRATE",
+          "ACCESS_COARSE_LOCATION"
+        ]
       },
       "package": "com.manohar9490.frontend"
     },
@@ -32,9 +50,7 @@
       }
     },
     "owner": "manohar9490",
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+
     "updates": {
       "url": "https://u.expo.dev/d3f35b4c-1030-4f3c-b58e-898ac5ba96e9"
     }

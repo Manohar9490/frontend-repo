@@ -34,7 +34,7 @@ export default function PrivacySecurityScreen() {
     }
 
     try {
-      await API.post("/auth/change-password", {
+      await API.post("/user/change-password", {
         currentPassword,
         newPassword,
       });
@@ -57,7 +57,7 @@ export default function PrivacySecurityScreen() {
           style: "destructive",
           onPress: async () => {
             try {
-              await API.delete("/auth/delete-account");
+              await API.delete("/user/delete-account");
               await AsyncStorage.removeItem("token");
               navigation.reset({
                 index: 0,

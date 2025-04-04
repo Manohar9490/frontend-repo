@@ -22,6 +22,19 @@ import {
 
 WebBrowser.maybeCompleteAuthSession();
 
+const syncLocalStepsToBackend = async () => {
+  const stored = await AsyncStorage.getItem("stepToday");
+  if (!stored) return;
+
+  try {
+    const stepData = JSON.parse(stored);
+    await API.post("/user/steps", stepData);
+    console.log("Step data synced on login/startup");
+  } catch (err) {
+    console.log("Failed to sync steps:", err.message);
+  }
+};
+
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -78,6 +91,7 @@ export default function LoginScreen({ navigation }) {
       const token = res.data.token;
       if (token) {
         await AsyncStorage.setItem("token", token);
+        await syncLocalStepsToBackend();
         console.log("Token saved");
       }
 

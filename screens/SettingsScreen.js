@@ -12,7 +12,20 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import API from "../utils/api";
+import { SafeAreaView } from "react-native-safe-area-context";
 
+const syncLocalStepsToBackend = async () => {
+  const stored = await AsyncStorage.getItem("stepToday");
+  if (!stored) return;
+
+  try {
+    const stepData = JSON.parse(stored);
+    await API.post("/user/steps", stepData);
+    console.log("Step data synced before logout");
+  } catch (err) {
+    console.log("Failed to sync steps before logout:", err.message);
+  }
+};
 export default function SettingsScreen() {
   const navigation = useNavigation();
   const [ratingVisible, setRatingVisible] = useState(false);
@@ -20,9 +33,15 @@ export default function SettingsScreen() {
   const [feedback, setFeedback] = useState("");
 
   const handleLogout = async () => {
-    await AsyncStorage.removeItem("token");
-    await API.post("/auth/logout");
-    navigation.replace("Login");
+    try {
+      await syncLocalStepsToBackend(); //  Sync before logout
+      await AsyncStorage.removeItem("token");
+      await API.post("/auth/logout");
+      navigation.replace("Login");
+    } catch (err) {
+      console.log("Logout error:", err);
+      Alert.alert("Logout Failed", "Something went wrong while logging out.");
+    }
   };
 
   const submitRating = () => {
@@ -32,77 +51,81 @@ export default function SettingsScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Settings</Text>
+    <SafeAreaView style={styles.container}>
+      <View>
+        <Text style={styles.header}>Settings</Text>
 
-      <TouchableOpacity
-        style={styles.option}
-        onPress={() => navigation.navigate("EditProfile")}
-      >
-        <Ionicons name="person-outline" size={24} />
-        <Text style={styles.label}>Account</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => navigation.navigate("EditProfile")}
+        >
+          <Ionicons name="person-outline" size={24} />
+          <Text style={styles.label}>Account</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.option}
-        onPress={() => navigation.navigate("PrivacySecurity")}
-      >
-        <Ionicons name="lock-closed-outline" size={24} />
-        <Text style={styles.label}>Privacy & Security</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => navigation.navigate("PrivacySecurity")}
+        >
+          <Ionicons name="lock-closed-outline" size={24} />
+          <Text style={styles.label}>Privacy & Security</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.option}
-        onPress={() => setRatingVisible(true)}
-      >
-        <Ionicons name="star-outline" size={24} />
-        <Text style={styles.label}>Rate App</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() => setRatingVisible(true)}
+        >
+          <Ionicons name="star-outline" size={24} />
+          <Text style={styles.label}>Rate App</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.option}
-        onPress={() =>
-          Alert.alert("Contact Us", "Email us at support@eatfitgo.com")
-        }
-      >
-        <Ionicons name="mail-outline" size={24} />
-        <Text style={styles.label}>Contact Us</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.option}
+          onPress={() =>
+            Alert.alert("Contact Us", "Email us at support@eatfitgo.com")
+          }
+        >
+          <Ionicons name="mail-outline" size={24} />
+          <Text style={styles.label}>Contact Us</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.option} onPress={handleLogout}>
-        <Ionicons name="log-out-outline" size={24} color="red" />
-        <Text style={[styles.label, { color: "red" }]}>Logout</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.option} onPress={handleLogout}>
+          <Ionicons name="log-out-outline" size={24} color="red" />
+          <Text style={[styles.label, { color: "red" }]}>Logout</Text>
+        </TouchableOpacity>
 
-      <Modal visible={ratingVisible} transparent animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalBox}>
-            <Text style={styles.modalTitle}>Rate EatFitGo</Text>
-            <View style={styles.stars}>
-              {[1, 2, 3, 4, 5].map((i) => (
-                <TouchableOpacity key={i} onPress={() => setRating(i)}>
-                  <Ionicons
-                    name={i <= rating ? "star" : "star-outline"}
-                    size={30}
-                    color="#FFD700"
-                  />
-                </TouchableOpacity>
-              ))}
+        <Modal visible={ratingVisible} transparent animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={styles.modalBox}>
+              <Text style={styles.modalTitle}>Rate EatFitGo</Text>
+              <View style={styles.stars}>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <TouchableOpacity key={i} onPress={() => setRating(i)}>
+                    <Ionicons
+                      name={i <= rating ? "star" : "star-outline"}
+                      size={30}
+                      color="#FFD700"
+                    />
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <TextInput
+                placeholder="Any feedback?"
+                style={styles.input}
+                multiline
+                value={feedback}
+                onChangeText={setFeedback}
+              />
+              <TouchableOpacity style={styles.submitBtn} onPress={submitRating}>
+                <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                  Submit
+                </Text>
+              </TouchableOpacity>
             </View>
-            <TextInput
-              placeholder="Any feedback?"
-              style={styles.input}
-              multiline
-              value={feedback}
-              onChangeText={setFeedback}
-            />
-            <TouchableOpacity style={styles.submitBtn} onPress={submitRating}>
-              <Text style={{ color: "#fff", fontWeight: "bold" }}>Submit</Text>
-            </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
-    </View>
+        </Modal>
+      </View>
+    </SafeAreaView>
   );
 }
 

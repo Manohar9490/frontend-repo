@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import API from "../utils/api";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function DietScreen() {
   const [recommendation, setRecommendation] = useState(null);
@@ -54,49 +55,51 @@ export default function DietScreen() {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.heading}>🍽️ Today's Meals</Text>
+    <SafeAreaView style={styles.container}>
+      <ScrollView>
+        <Text style={styles.heading}>🍽️ Today's Meals</Text>
 
-      {splitMeals.map((mealGroup, idx) => (
-        <View key={idx} style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            <MaterialCommunityIcons name="food" size={20} color="#00c896" />{" "}
-            {mealLabels[idx]}
+        {splitMeals.map((mealGroup, idx) => (
+          <View key={idx} style={styles.section}>
+            <Text style={styles.sectionTitle}>
+              <MaterialCommunityIcons name="food" size={20} color="#00c896" />{" "}
+              {mealLabels[idx]}
+            </Text>
+            {mealGroup.map((item, i) => (
+              <View key={i} style={styles.card}>
+                <Text style={styles.foodName}>{item.name}</Text>
+                <Text style={styles.details}>
+                  {item.quantity} | {item.calories} kcal
+                </Text>
+                <Text style={styles.macro}>
+                  Protein: {item.protein}g | Carbs: {item.carbs}g | Fat:{" "}
+                  {item.fats}g
+                </Text>
+              </View>
+            ))}
+          </View>
+        ))}
+
+        <Text style={styles.heading}>📊 Total Summary</Text>
+        <View style={styles.summaryBox}>
+          <Text style={styles.summaryText}>
+            🔥 Calories: {recommendation.totalRecommendedCalories} kcal
           </Text>
-          {mealGroup.map((item, i) => (
-            <View key={i} style={styles.card}>
-              <Text style={styles.foodName}>{item.name}</Text>
-              <Text style={styles.details}>
-                {item.quantity} | {item.calories} kcal
-              </Text>
-              <Text style={styles.macro}>
-                Protein: {item.protein}g | Carbs: {item.carbs}g | Fat:{" "}
-                {item.fats}g
-              </Text>
-            </View>
-          ))}
+          <Text style={styles.summaryText}>
+            💪 Protein: {recommendation.totalRecommendedProtein}g
+          </Text>
+          <Text style={styles.summaryText}>
+            🍞 Carbs: {recommendation.totalRecommendedCarbs}g
+          </Text>
+          <Text style={styles.summaryText}>
+            🧈 Fat: {recommendation.totalRecommendedFats}g
+          </Text>
+          <Text style={styles.summaryText}>
+            💧 Water: {recommendation.waterLiters} Liters/day
+          </Text>
         </View>
-      ))}
-
-      <Text style={styles.heading}>📊 Total Summary</Text>
-      <View style={styles.summaryBox}>
-        <Text style={styles.summaryText}>
-          🔥 Calories: {recommendation.totalRecommendedCalories} kcal
-        </Text>
-        <Text style={styles.summaryText}>
-          💪 Protein: {recommendation.totalRecommendedProtein}g
-        </Text>
-        <Text style={styles.summaryText}>
-          🍞 Carbs: {recommendation.totalRecommendedCarbs}g
-        </Text>
-        <Text style={styles.summaryText}>
-          🧈 Fat: {recommendation.totalRecommendedFats}g
-        </Text>
-        <Text style={styles.summaryText}>
-          💧 Water: {recommendation.waterLiters} Liters/day
-        </Text>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
