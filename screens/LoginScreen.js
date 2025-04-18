@@ -12,6 +12,7 @@ import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import * as AppleAuthentication from "expo-apple-authentication";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import LottieView from "lottie-react-native";
 
 import API from "../utils/api";
 import {
@@ -152,69 +153,87 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login to EatFitGo</Text>
-
-      <TextInput
-        placeholder="Email"
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        value={email}
-        onChangeText={setEmail}
+      {/* Lottie Background */}
+      <LottieView
+        source={require("../assets/loginpage.json")}
+        autoPlay
+        loop
+        style={styles.lottieBackground}
       />
 
-      <TextInput
-        placeholder="Password"
-        style={styles.input}
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-      />
+      {/* Content Container */}
+      <View style={styles.contentContainer}>
+        <Text style={styles.title}>Login to EatFitGo</Text>
 
-      <TouchableOpacity onPress={() => Alert.alert("Forgot Password")}>
-        <Text style={styles.link}>Forgot password?</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={handleLogin}
-        disabled={loading}
-      >
-        <Text style={styles.buttonText}>
-          {loading ? "Logging in..." : "Login"}
-        </Text>
-      </TouchableOpacity>
-
-      <View style={styles.divider} />
-
-      <TouchableOpacity
-        style={[styles.socialButton, { backgroundColor: "#DB4437" }]}
-        onPress={() => promptAsync()}
-      >
-        <Text style={styles.socialText}>Continue with Google</Text>
-      </TouchableOpacity>
-
-      {Platform.OS === "ios" && (
-        <AppleAuthentication.AppleAuthenticationButton
-          buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-          buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-          cornerRadius={5}
-          style={{ width: "100%", height: 50, marginTop: 10 }}
-          onPress={handleAppleLogin}
+        <TextInput
+          placeholder="Email"
+          style={styles.input}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
         />
-      )}
 
-      <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
-        <Text style={styles.link}>Don’t have an account? Sign up</Text>
-      </TouchableOpacity>
-      {/* <TouchableOpacity
-        style={[styles.skipButton, { marginTop: 20 }]}
-        onPress={() => navigation.navigate("PedometerTest")}
-      >
-        <Text style={{ color: "#007AFF", fontSize: 16 }}>
-          Skip & Test Pedometer
-        </Text>
-      </TouchableOpacity> */}
+        <TextInput
+          placeholder="Password"
+          style={styles.input}
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+
+        <TouchableOpacity onPress={() => Alert.alert("Forgot Password")}>
+          <Text style={styles.link}>Forgot password?</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          <Text style={styles.buttonText}>
+            {loading ? "Logging in..." : "Login"}
+          </Text>
+        </TouchableOpacity>
+
+        {/* <View style={styles.divider} /> */}
+        {true === false && (
+          <>
+            <TouchableOpacity
+              style={[styles.socialButton, { backgroundColor: "#DB4437" }]}
+              onPress={() => promptAsync()}
+            >
+              <Text style={styles.socialText}>Continue with Google</Text>
+            </TouchableOpacity>
+
+            {Platform.OS === "ios" && (
+              <AppleAuthentication.AppleAuthenticationButton
+                buttonType={
+                  AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN
+                }
+                buttonStyle={
+                  AppleAuthentication.AppleAuthenticationButtonStyle.BLACK
+                }
+                cornerRadius={5}
+                style={{ width: "100%", height: 50, marginTop: 10 }}
+                onPress={handleAppleLogin}
+              />
+            )}
+          </>
+        )}
+
+        <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
+          <Text style={styles.link}>Don’t have an account? Sign up</Text>
+        </TouchableOpacity>
+        {/* <TouchableOpacity
+          style={[styles.skipButton, { marginTop: 20 }]}
+          onPress={() => navigation.navigate("PedometerTest")}
+        >
+          <Text style={{ color: "#007AFF", fontSize: 16 }}>
+            Skip & Test Pedometer
+          </Text>
+        </TouchableOpacity> */}
+      </View>
     </View>
   );
 }
@@ -222,9 +241,22 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  lottieBackground: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: "100%",
+    height: "100%",
+  },
+  contentContainer: {
+    flex: 1,
     padding: 20,
     paddingTop: 80,
-    backgroundColor: "#fff",
+    backgroundColor: "transparent",
+    justifyContent: "center",
   },
   title: {
     fontSize: 26,
@@ -239,6 +271,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 10,
     marginBottom: 15,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
   },
   button: {
     backgroundColor: "#00c896",
