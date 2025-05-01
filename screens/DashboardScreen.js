@@ -199,9 +199,18 @@ const DashboardScreen = () => {
       >
         <Text style={styles.greeting}>Hi, {user.firstName}! 👋</Text>
 
+        {achievedTarget && (
+          <View style={styles.achievementBanner}>
+            <Text style={styles.achievementText}>
+              Let's go......! Don't stop. Keep Moving
+            </Text>
+            {/*             <Text style={styles.achievementText}>Keep Moving! 💪</Text> */}
+          </View>
+        )}
+
         <View style={styles.donutWrapper}>
           <ProgressChart
-            data={{ data: [percentage] }}
+            data={{ data: [Math.min(percentage, 0.999)] }}
             width={screenWidth - 60}
             height={200}
             strokeWidth={20}
@@ -225,10 +234,10 @@ const DashboardScreen = () => {
             <Ionicons name="walk-outline" size={24} color="#4682B4" />
             <Text style={styles.kpiText}>{stepData.distanceKm} km</Text>
           </View>
-          <View style={styles.kpiBox}>
-            <Ionicons name="time-outline" size={24} color="#00C896" />
-            <Text style={styles.kpiText}>{stepData.timeMinutes} min</Text>
-          </View>
+          {/*           <View style={styles.kpiBox}>
+           <Ionicons name="time-outline" size={24} color="#00C896" />
+           <Text style={styles.kpiText}>{stepData.timeMinutes} min</Text>
+          </View> */}
         </View>
 
         <Text style={styles.graphTitle}>Weekly Steps</Text>
@@ -277,15 +286,6 @@ const DashboardScreen = () => {
             <Text>No weekly step data available.</Text>
           )}
         </View>
-
-        {achievedTarget && (
-          <View style={styles.achievementBanner}>
-            <Text style={styles.achievementText}>
-              🎉 Achieved Today's Target!
-            </Text>
-            <Text style={styles.achievementText}>Keep Moving! 💪</Text>
-          </View>
-        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -337,11 +337,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   achievementBanner: {
-    backgroundColor: "#4CAF50", // Green for achievement
-    padding: 15,
+    backgroundColor: "rgba(0, 200, 150, 1)",
+    padding: 10,
     borderRadius: 8,
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 5,
   },
   achievementText: {
     color: "#fff",

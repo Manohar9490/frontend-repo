@@ -10,6 +10,7 @@ import {
   Image,
 } from "react-native";
 import API from "../utils/api";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const avatars = [
   require("../assets/avatars/avatar1.webp"),
@@ -106,118 +107,129 @@ export default function EditProfileScreen({ navigation }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Edit Profile</Text>
+    <SafeAreaView>
+      <ScrollView style={styles.container}>
+        <Text style={styles.title}>Edit Profile</Text>
 
-      {/* Selected Avatar Preview */}
-      <View style={styles.topAvatarWrapper}>
-        <Image
-          source={
-            avatars[
-              parseInt(form.avatar.replace("avatar", "").replace(".png", "")) -
-                1
-            ]
-          }
-          style={styles.topAvatar}
-        />
-      </View>
-
-      <Text style={styles.label}>First Name</Text>
-      <TextInput style={styles.input} value={form.firstName} editable={false} />
-
-      <Text style={styles.label}>Last Name</Text>
-      <TextInput style={styles.input} value={form.lastName} editable={false} />
-
-      <Text style={styles.label}>Email</Text>
-      <TextInput
-        style={styles.input}
-        value={form.email}
-        editable={false}
-        selectTextOnFocus={false}
-      />
-
-      <Text style={styles.label}>Age</Text>
-      <TextInput
-        style={styles.input}
-        value={form.age}
-        keyboardType="numeric"
-        onChangeText={(text) => handleChange("age", text)}
-      />
-
-      <Text style={styles.label}>Gender</Text>
-      <TextInput
-        style={styles.input}
-        value={form.gender}
-        editable={false}
-        selectTextOnFocus={false}
-      />
-
-      <Text style={styles.label}>Height (cm)</Text>
-      <TextInput
-        style={styles.input}
-        value={form.height}
-        keyboardType="numeric"
-        onChangeText={(text) => handleChange("height", text)}
-      />
-
-      <Text style={styles.label}>Weight (kg)</Text>
-      <TextInput
-        style={styles.input}
-        value={form.weight}
-        keyboardType="numeric"
-        onChangeText={(text) => handleChange("weight", text)}
-      />
-
-      <Text style={styles.label}>Step Target</Text>
-      <TextInput
-        style={styles.input}
-        value={form.stepTarget}
-        keyboardType="numeric"
-        onChangeText={(text) => handleChange("stepTarget", text)}
-      />
-
-      <Text style={styles.label}>Daily Calorie Goal</Text>
-      <TextInput
-        style={styles.input}
-        value={form.dailyCalorieGoal}
-        keyboardType="numeric"
-        onChangeText={(text) => handleChange("dailyCalorieGoal", text)}
-      />
-
-      <Text style={styles.label}>Diet Preference</Text>
-      <TextInput
-        style={styles.input}
-        value={form.preferences}
-        onChangeText={(text) => handleChange("preferences", text)}
-      />
-
-      <Text style={styles.label}>Choose Avatar</Text>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <View style={styles.avatarContainer}>
-          {avatars.map((src, index) => {
-            const avatarName = `avatar${index + 1}.png`;
-            return (
-              <TouchableOpacity
-                key={avatarName}
-                onPress={() => handleChange("avatar", avatarName)}
-              >
-                <Image
-                  source={src}
-                  style={[
-                    styles.avatar,
-                    form.avatar === avatarName && styles.selectedAvatar,
-                  ]}
-                />
-              </TouchableOpacity>
-            );
-          })}
+        {/* Selected Avatar Preview */}
+        <View style={styles.topAvatarWrapper}>
+          <Image
+            source={
+              avatars[
+                parseInt(
+                  form.avatar.replace("avatar", "").replace(".png", "")
+                ) - 1
+              ]
+            }
+            style={styles.topAvatar}
+          />
         </View>
-      </ScrollView>
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Update Profile</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        <Text style={styles.label}>First Name</Text>
+        <TextInput
+          style={styles.input}
+          value={form.firstName}
+          editable={false}
+        />
+
+        <Text style={styles.label}>Last Name</Text>
+        <TextInput
+          style={styles.input}
+          value={form.lastName}
+          editable={false}
+        />
+
+        <Text style={styles.label}>Email</Text>
+        <TextInput
+          style={styles.input}
+          value={form.email}
+          editable={false}
+          selectTextOnFocus={false}
+        />
+
+        <Text style={styles.label}>Age</Text>
+        <TextInput
+          style={styles.input}
+          value={form.age}
+          keyboardType="numeric"
+          onChangeText={(text) => handleChange("age", text)}
+        />
+
+        <Text style={styles.label}>Gender</Text>
+        <TextInput
+          style={styles.input}
+          value={form.gender}
+          editable={false}
+          selectTextOnFocus={false}
+        />
+
+        <Text style={styles.label}>Height (cm)</Text>
+        <TextInput
+          style={styles.input}
+          value={form.height}
+          keyboardType="numeric"
+          onChangeText={(text) => handleChange("height", text)}
+        />
+
+        <Text style={styles.label}>Weight (kg)</Text>
+        <TextInput
+          style={styles.input}
+          value={form.weight}
+          keyboardType="numeric"
+          onChangeText={(text) => handleChange("weight", text)}
+        />
+
+        <Text style={styles.label}>Step Target</Text>
+        <TextInput
+          style={styles.input}
+          value={form.stepTarget}
+          keyboardType="numeric"
+          onChangeText={(text) => handleChange("stepTarget", text)}
+        />
+
+        <Text style={styles.label}>Daily Calorie Goal</Text>
+        <TextInput
+          style={styles.input}
+          value={form.dailyCalorieGoal}
+          keyboardType="numeric"
+          onChangeText={(text) => handleChange("dailyCalorieGoal", text)}
+        />
+
+        <Text style={styles.label}>Diet Preference</Text>
+        <TextInput
+          style={styles.input}
+          value={form.preferences}
+          onChangeText={(text) => handleChange("preferences", text)}
+        />
+
+        <Text style={styles.label}>Choose Avatar</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={styles.avatarContainer}>
+            {avatars.map((src, index) => {
+              const avatarName = `avatar${index + 1}.png`;
+              return (
+                <TouchableOpacity
+                  key={avatarName}
+                  onPress={() => handleChange("avatar", avatarName)}
+                >
+                  <Image
+                    source={src}
+                    style={[
+                      styles.avatar,
+                      form.avatar === avatarName && styles.selectedAvatar,
+                    ]}
+                  />
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </ScrollView>
+
+        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Update Profile</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -243,6 +255,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginTop: 20,
+    marginBottom: 40,
   },
   buttonText: { color: "#fff", fontWeight: "bold" },
   topAvatarWrapper: {
