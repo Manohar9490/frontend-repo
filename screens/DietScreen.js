@@ -56,7 +56,7 @@ export default function DietScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.heading}>🍽️ Today's Meals</Text>
 
         {splitMeals.map((mealGroup, idx) => (

@@ -16,6 +16,7 @@ import * as Notifications from "expo-notifications";
 import API from "../utils/api";
 import { registerBackgroundTask } from "../utils/backgroundTask";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { HEALTH_TIPS } from "../utils/healthTips";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -32,6 +33,7 @@ const DashboardScreen = () => {
   const [yValue, setYValue] = useState(0);
   const [achievedTarget, setAchievedTarget] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [dailyTips, setDailyTips] = useState([]);
 
   const lastStepTime = useRef(0);
   const inStep = useRef(false);
@@ -42,6 +44,41 @@ const DashboardScreen = () => {
     await restoreStepsFromStorage();
     setIsRefreshing(false);
   }, [fetchUserAndSteps, restoreStepsFromStorage]);
+
+  const loadDailyTips = async () => {
+    const today = new Date().toISOString().split("T")[0];
+    const storedTips = await AsyncStorage.getItem("dailyTips");
+    const storedDate = await AsyncStorage.getItem("dailyTipsDate");
+
+    try {
+      if (storedTips && storedDate === today) {
+        const parsedTips = JSON.parse(storedTips);
+        if (Array.isArray(parsedTips) && parsedTips.length === 2) {
+          setDailyTips(parsedTips);
+          return;
+        }
+      }
+
+      // Pick two unique random tips
+      let tip1Index = Math.floor(Math.random() * HEALTH_TIPS.length);
+      let tip2Index;
+      do {
+        tip2Index = Math.floor(Math.random() * HEALTH_TIPS.length);
+      } while (tip2Index === tip1Index);
+
+      const tips = [HEALTH_TIPS[tip1Index], HEALTH_TIPS[tip2Index]];
+      await AsyncStorage.setItem("dailyTips", JSON.stringify(tips));
+      await AsyncStorage.setItem("dailyTipsDate", today);
+      setDailyTips(tips);
+    } catch (err) {
+      console.error("Failed to load tips:", err);
+      setDailyTips([]);
+    }
+  };
+
+  useEffect(() => {
+    loadDailyTips();
+  }, []);
 
   useEffect(() => {
     restoreStepsFromStorage();
@@ -193,9 +230,10 @@ const DashboardScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
-        refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-        }
+        showsVerticalScrollIndicator={false}
+        // refreshControl={
+        //   <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+        // }
       >
         <Text style={styles.greeting}>Hi, {user.firstName}! 👋</Text>
 
@@ -286,6 +324,17 @@ const DashboardScreen = () => {
             <Text>No weekly step data available.</Text>
           )}
         </View>
+
+        {Array.isArray(dailyTips) && dailyTips.length > 0 && (
+          <View style={styles.tipsContainer}>
+            {dailyTips.map((tip, index) => (
+              <View key={index} style={styles.tipCard}>
+                <Text style={styles.tipTitle}>💡 Tip {index + 1}</Text>
+                <Text style={styles.tipText}>{tip}</Text>
+              </View>
+            ))}
+          </View>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -347,6 +396,30 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  tipsContainer: {
+    marginTop: 20,
+    marginBottom: 30,
+  },
+
+  tipCard: {
+    backgroundColor: "#f0fdf4",
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+
+  tipTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 6,
+    color: "#00C896",
+  },
+
+  tipText: {
+    fontSize: 14,
+    color: "#333",
+    lineHeight: 20,
   },
 });
 

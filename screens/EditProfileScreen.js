@@ -108,7 +108,7 @@ export default function EditProfileScreen({ navigation }) {
 
   return (
     <SafeAreaView>
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Edit Profile</Text>
 
         {/* Selected Avatar Preview */}
